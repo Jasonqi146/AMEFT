@@ -8,7 +8,9 @@ source ~/.bashrc
 cd ~/AMEFT/LLaMA-Factory/src
 conda activate llama_factory
 
-CUDA_VISIBLE_DEVICES=0,1,2,3 python train_bash.py \
+CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+    --config_file ../examples/accelerate/single_config.yaml \
+    train_bash.py \
     --stage sft \
     --do_train \
     --model_name_or_path=$MODEL_PATH \
@@ -22,7 +24,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python train_bash.py \
     --overwrite_output_dir \
     --cutoff_len 2048 \
     --preprocessing_num_workers 16 \
-    --per_device_train_batch_size 8 \
+    --per_device_train_batch_size 4 \
     --per_device_eval_batch_size 1 \
     --gradient_accumulation_steps 8 \
     --lr_scheduler_type cosine \
