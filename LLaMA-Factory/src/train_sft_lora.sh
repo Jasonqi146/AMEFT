@@ -1,7 +1,8 @@
 #!/bin/bash
 
-MODEL_PATH="/data/models/huggingface/meta-llama/Llama-2-7b-hf"
-OUTPUT_DIR="/data/user_data/wenkail/mlsys/lora_test"
+# MODEL_NAME_OR_PATH="/data/models/huggingface/meta-llama/Llama-2-7b-hf"
+MODEL_NAME_OR_PATH="mistralai/Mistral-7B-Instruct-v0.2"
+OUTPUT_DIR="/data/user_data/wenkail/mlsys/lora_test/mistral_7b_instruct_v0.2"
 
 
 source ~/.bashrc
@@ -13,7 +14,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
     train_bash.py \
     --stage sft \
     --do_train \
-    --model_name_or_path=$MODEL_PATH \
+    --model_name_or_path=$MODEL_NAME_OR_PATH \
     --dataset alpaca_news_summarization_train \
     --dataset_dir ../data \
     --template default \

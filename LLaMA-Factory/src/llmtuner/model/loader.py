@@ -8,7 +8,9 @@ from ..extras.misc import count_parameters, get_current_device, try_download_mod
 from .adapter import init_adapter
 from .patcher import patch_config, patch_model, patch_tokenizer, patch_valuehead_model
 from .utils import load_valuehead_params, register_autoclass
+from huggingface_hub import login
 
+login(token="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")
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, PreTrainedTokenizer
