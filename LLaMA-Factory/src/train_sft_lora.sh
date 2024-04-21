@@ -8,11 +8,12 @@ source ~/.bashrc
 cd ~/AMEFT/LLaMA-Factory/src
 conda activate llama_factory
 
-CUDA_VISIBLE_DEVICES=0 python train_bash.py \
+CUDA_VISIBLE_DEVICES=0,1,2,3 python train_bash.py \
     --stage sft \
     --do_train \
     --model_name_or_path=$MODEL_PATH \
     --dataset alpaca_news_summarization_train \
+    --dataset_dir ../data \
     --template default \
     --finetuning_type lora \
     --lora_target q_proj,v_proj \
@@ -32,8 +33,8 @@ CUDA_VISIBLE_DEVICES=0 python train_bash.py \
     --evaluation_strategy steps \
     --load_best_model_at_end \
     --learning_rate 5e-5 \
-    --num_train_epochs 3.0 \
-    --max_samples 3000 \
+    --num_train_epochs 10.0 \
+    --max_samples 1000 \
     --val_size 0.1 \
     --plot_loss \
     --fp16
