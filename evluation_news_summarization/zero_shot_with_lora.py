@@ -21,7 +21,7 @@ def get_arguments():
     parser.add_argument('--top_k', type=int, default=5, help='top_k') 
     parser.add_argument('--max_tokens', type=int, default=512, help='max_tokens')
     parser.add_argument('--tensor_parallel_size', type=int, default=1, help='tensor parallel size')
-    parser.add_argument('--use_lora', type=bool ,default=False,help='')
+    parser.add_argument('--use_lora', type=bool ,default=True,help='')
     args = parser.parse_args()
     return args
 
@@ -53,8 +53,7 @@ def main():
             [{'role': 'user', 'content': prompts}],
             tokenize=False,
         )
-        output = model.generate([conversations], sampling_params)
-        # , lora_request=LoRARequest("sft_adapter", 1, args.lora_path))
+        output = model.generate([conversations], sampling_params, lora_request=LoRARequest("sft_adapter", 1, args.lora_path))
         ground_true = item['output']
         current_pair['article'] = item['input']
         current_pair['model_output'] = output[0].outputs[0].text.strip().replace("<|start_header_id|>assistant<|end_header_id|>\n\n", "")
