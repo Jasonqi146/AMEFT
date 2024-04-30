@@ -47,7 +47,21 @@ def run_sft(
     # Override the decoding parameters of Seq2SeqTrainer
     training_args.generation_max_length = training_args.generation_max_length or data_args.cutoff_len
     training_args.generation_num_beams = data_args.eval_num_beams or training_args.generation_num_beams
-
+    
+    # forward_profiler = profile(
+    #         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
+    #         schedule=torch.profiler.schedule(wait=1, warmup=1, active=3, repeat=1),
+    #         on_trace_ready=torch.profiler.tensorboard_trace_handler('/workspace/AMEFT/LLaMA-Factory/log/model_backward_trace'),
+    #         record_shapes=True, 
+    #         profile_memory=True
+    #         )
+    # backward_profiler = profile(
+    #         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
+    #         schedule=torch.profiler.schedule(wait=1, warmup=1, active=3, repeat=1),
+    #         on_trace_ready=torch.profiler.tensorboard_trace_handler('/workspace/AMEFT/LLaMA-Factory/log/model_backward_trace'),
+    #         record_shapes=True, 
+    #         profile_memory=True
+    #         )
     # Initialize our Trainer
     trainer = CustomSeq2SeqTrainer(
         model=model,

@@ -10,7 +10,7 @@ from .patcher import patch_config, patch_model, patch_tokenizer, patch_valuehead
 from .utils import load_valuehead_params, register_autoclass
 from huggingface_hub import login
 
-login(token="hf_")
+login(token="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")
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, PreTrainedTokenizer
