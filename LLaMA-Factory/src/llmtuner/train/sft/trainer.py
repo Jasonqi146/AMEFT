@@ -56,17 +56,20 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
             labels = inputs.pop("labels")
         else:
             labels = None
-        with profile(
-            activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
-            schedule=torch.profiler.schedule(wait=1, warmup=1, active=3, repeat=1),
-            on_trace_ready=torch.profiler.tensorboard_trace_handler('/workspace/AMEFT/LLaMA-Factory/log/model_forward_trace'),
-            record_shapes=True, 
-            profile_memory=True
-            ) as prof:
-            prof.step()
-            outputs = model(**inputs)
+        
+        profiler_log_dir = os.environ.get('PROFILER_LOG_DIR', None)
+        if profiler_log_dir is not None:
+            with profile(
+                activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
+                schedule=torch.profiler.schedule(wait=0, warmup=0, active=2),
+                on_trace_ready=torch.profiler.tensorboard_trace_handler(os.path.join(profiler_log_dir, 'forward_trace')),
+                record_shapes=True, 
+                profile_memory=True
+                ) as prof:
+                outputs = model(**inputs)
+                prof.step()
+                
         # Save past state if it exists
-        # TODO: this needs to be fixed and made cleaner later.
         if self.args.past_index >= 0:
             self._past = outputs[self.args.past_index]
 
@@ -101,15 +104,17 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
         if self.args.n_gpu > 1:
             loss = loss.mean()  # mean() to average on multi-gpu parallel training
         
-        with profile(
-            activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
-            schedule=torch.profiler.schedule(wait=0, warmup=0, active=2, repeat=0),
-            on_trace_ready=torch.profiler.tensorboard_trace_handler('/workspace/AMEFT/LLaMA-Factory/log/model_backward_trace'),
-            record_shapes=True, 
-            profile_memory=True
-            ) as prof:
-            self.accelerator.backward(loss)
-            prof.step()
+        profiler_log_dir = os.environ.get('PROFILER_LOG_DIR', None)
+        if profiler_log_dir is not None:
+            with profile(
+                activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], 
+                schedule=torch.profiler.schedule(wait=0, warmup=0, active=2, repeat=0),
+                on_trace_ready=torch.profiler.tensorboard_trace_handler(os.path.join(profiler_log_dir, 'backward_trace')),
+                record_shapes=True, 
+                profile_memory=True
+                ) as prof:
+                self.accelerator.backward(loss)
+                prof.step()
 
         return loss.detach() / self.args.gradient_accumulation_steps
 
