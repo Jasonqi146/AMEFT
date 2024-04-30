@@ -2,14 +2,14 @@
 
 # MODEL_NAME_OR_PATH="/data/models/huggingface/meta-llama/Llama-2-7b-hf"
 MODEL_NAME_OR_PATH="mistralai/Mistral-7B-Instruct-v0.2"
-OUTPUT_DIR="/data/user_data/wenkail/mlsys/lora_test/mistral_7b_instruct_v0.2"
+OUTPUT_DIR="/workspace/AMEFT/LLaMA-Factory/lora_test/mistral_7b_instruct_v0.2"
 
 
-source ~/.bashrc
-cd ~/AMEFT/LLaMA-Factory/src
-conda activate llama_factory
+# source ~/.bashrc
+# cd ~/AMEFT/LLaMA-Factory/src
+# conda activate llama_factory
 
-CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
+accelerate launch \
     --config_file ../examples/accelerate/single_config.yaml \
     train_bash.py \
     --stage sft \
@@ -36,7 +36,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 accelerate launch \
     --evaluation_strategy steps \
     --load_best_model_at_end \
     --learning_rate 5e-5 \
-    --num_train_epochs 10.0 \
+    --num_train_epochs 0.1 \
     --max_samples 1000 \
     --val_size 0.1 \
     --plot_loss \
