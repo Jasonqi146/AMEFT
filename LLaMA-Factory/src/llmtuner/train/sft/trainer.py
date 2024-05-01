@@ -68,7 +68,9 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
                 ) as prof:
                 outputs = model(**inputs)
                 prof.step()
-                
+        else:
+            outputs = model(**inputs)
+            
         # Save past state if it exists
         if self.args.past_index >= 0:
             self._past = outputs[self.args.past_index]
@@ -115,6 +117,8 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
                 ) as prof:
                 self.accelerator.backward(loss)
                 prof.step()
+        else:
+            self.accelerator.backward(loss)
 
         return loss.detach() / self.args.gradient_accumulation_steps
 

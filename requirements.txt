@@ -1,1 +1,2 @@
 torch_tb_profiler
+wandb
