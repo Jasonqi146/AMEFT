@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Any, Dict
+import os
 
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 from trl import AutoModelForCausalLMWithValueHead
@@ -8,7 +9,9 @@ from ..extras.misc import count_parameters, get_current_device, try_download_mod
 from .adapter import init_adapter
 from .patcher import patch_config, patch_model, patch_tokenizer, patch_valuehead_model
 from .utils import load_valuehead_params, register_autoclass
+from huggingface_hub import login
 
+login(token=os.environ.get("HF_TOKEN"))
 
 if TYPE_CHECKING:
     from transformers import PreTrainedModel, PreTrainedTokenizer
